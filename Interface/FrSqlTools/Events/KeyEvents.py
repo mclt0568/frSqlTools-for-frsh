@@ -1,6 +1,7 @@
 import sys
 import LanguageControls
 from Interface.FrSqlTools.Events import keyEvent
+from ColorStr import parse
 
 @keyEvent("Enter")
 def Enter(ctx):
@@ -9,7 +10,12 @@ def Enter(ctx):
 		ctx.appendHistory(ctx.command,False)
 	else:
 		ctx.commandHistory.resetIndex()
-	ctx.execCmd(ctx.command)
+	if (ctx.flags["mode"] == "sql"):
+		ctx.sqlCache += ("\n" if ctx.sqlCache else "")
+		ctx.sqlCache += ctx.command
+		ctx.checkSqlCache()
+	else:
+		ctx.execCmd(ctx.command)
 	ctx.command = ""
 	ctx.commandCarrot = 0
 
@@ -25,7 +31,7 @@ def Backspace(ctx):
 def Ctrl_C(ctx):
 	if ctx.command.strip():
 		ctx.appendHistory(ctx.command,True)
-	sys.stdout.write(f"{ctx.getPrompt()}\033[9m{ctx.command}\033[0m\n")
+	sys.stdout.write(parse(f"ƒw§k^C§0\n"))
 	sys.stdout.flush()
 	ctx.command = ""
 	ctx.commandCarrot = 0
