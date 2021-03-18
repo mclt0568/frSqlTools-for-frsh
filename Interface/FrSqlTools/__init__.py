@@ -1,9 +1,7 @@
 from Interface import GetKeyPress
-from Interface.PromptInterface import PromptVariables
-from Interface.PromptInterface.PromptVariables import EscapeFunctions
-from Interface.PromptInterface import Events
-from Interface.PromptInterface.Events import KeyEvents
-from Interface.PromptInterface.HistoryRecorder import HistoryRecorder
+from Interface.FrSqlTools import Events
+from Interface.FrSqlTools.Events import KeyEvents
+from Interface.FrSqlTools.HistoryRecorder import HistoryRecorder
 from sys import stdout
 import LanguageControls
 import DirControls
@@ -11,7 +9,7 @@ import readchar
 import sys
 import os
 
-class PromptInterface:
+class FrSqlTools:
 	def __init__(self):
 		self.commandHistory = HistoryRecorder()
 		self.command = ""
@@ -48,14 +46,7 @@ class PromptInterface:
 			print("")
 			#Endi of
 	def getPrompt(self):
-		return "\r" + PromptVariables.getPrompt(self,LanguageControls.VARIABLES["PROMPT"][1])
-		# prompt = f"\r{LanguageControls.VARIABLES['PROMPT'][1]}"
-		# while "!p" in prompt:
-		# 	prompt = prompt.replace("!p",LanguageControls.VARIABLES["CWD"][1])
-		# while "!s" in prompt:
-		# 	prompt = prompt.replace("!s",LanguageControls.VARIABLES["SCWD"][1])
-		# while "!c" in prompt:
-		# 	prompt = prompt.replace("!c","\033[")
+		return "\r"
 		return prompt
 	def setCarrot(self,index):
 		stdout.write(f"{self.getPrompt()}{self.command}")

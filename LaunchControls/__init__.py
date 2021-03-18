@@ -1,6 +1,6 @@
 from LaunchControls import InitialVariables
 from os.path import isdir
-from Interface import InterfaceControl,PromptInterface
+from Interface import InterfaceControl,FrSqlTools
 import Interface
 import LanguageControls
 import os
@@ -23,7 +23,7 @@ def init(mode,cwd):
 	# LanguageControls.VARIABLES["CWD"][1] = CWD
 	# CWD = CWD.replace(os.path.expanduser("~"),"~")
 	# LanguageControls.VARIABLES["SCWD"] = ["s",CWD]
-	InterfaceControl.RegisterInterface(mode,PromptInterface.PromptInterface)
+	InterfaceControl.RegisterInterface(mode,FrSqlTools.FrSqlTools)
 	Interface.MODE=mode
 
 def launch():

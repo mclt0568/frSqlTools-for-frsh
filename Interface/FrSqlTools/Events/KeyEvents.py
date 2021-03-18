@@ -1,6 +1,6 @@
 import sys
 import LanguageControls
-from Interface.PromptInterface.Events import keyEvent
+from Interface.FrSqlTools.Events import keyEvent
 
 @keyEvent("Enter")
 def Enter(ctx):
