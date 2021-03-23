@@ -14,6 +14,10 @@ def Enter(ctx):
 		ctx.sqlCache += ("\n" if ctx.sqlCache else "")
 		ctx.sqlCache += ctx.command
 		ctx.checkSqlCache()
+	elif (ctx.flags["mode"] == "multi-sql"):
+		ctx.multiSqlCache += ("\n" if ctx.multiSqlCache else "")
+		ctx.multiSqlCache += ctx.command
+		ctx.checkMultiSqlCache()
 	else:
 		ctx.execCmd(ctx.command)
 	ctx.command = ""

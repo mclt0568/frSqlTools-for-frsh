@@ -98,8 +98,10 @@ def lt(client,args):
 	except Exception as e:
 		log(e,isError=True)
 
-@command("```")
+@command("`")
 def cd(client,args):
 	client.flags["mode"] = "sql"
-		
 
+@command("```")
+def cd(client,args):
+	client.flags["mode"] = "multi-sql"

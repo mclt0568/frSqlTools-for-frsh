@@ -21,6 +21,7 @@ class FrSqlTools:
 		self.commandCarrot = 0
 		self.db = None
 		self.sqlCache = ""
+		self.multiSqlCache = ""
 		self.meta = {
 			"host":"",
 			"user":"",
@@ -56,6 +57,20 @@ class FrSqlTools:
 		cur = self.db.cursor()
 		cur.execute(sql)
 		return cur
+	def getFormatFromCursor(self,cursor):
+		result = []
+		result.append(f"{cursor.column_names}")
+		for i in cursor:
+			result.append(i)
+		return result
+	def displayFormattedResult(slef,result):
+		s = [[str(e) for e in row] for row in result]
+		lens = [max(map(len, col)) for col in zip(*s)]
+		fmt = '\t'.join('{{:{}}}'.format(x) for x in lens)
+		table = [fmt.format(*row) for row in s]
+		print(table[0])
+		print("-"*len(table[0]))
+		print('\n'.join(table[1:]))
 	def fetchDatabases(self):
 		cursor = self.execSql("SHOW DATABASES")
 		return [i[0] for i in cursor]
@@ -73,18 +88,47 @@ class FrSqlTools:
 		if ";" in self.sqlCache:
 			try:
 				result = self.execSql(self.sqlCache)
-				for i in result:
-					print(i)
+				formatted = self.getFormatFromCursor(result)
+				self.displayFormattedResult(formatted)
 			except Exception as e:
 				log(e, isError=True)
 			self.flags["mode"] = "normal"
 			self.sqlCache = ""
+	def checkMultiSqlCache(self):
+		if "```" in self.multiSqlCache:
+			self.multiSqlCache = self.multiSqlCache[:-3]
+			sqls = self.multiSqlCache.split(";")
+			errors = {}
+			results = {}
+			for i in range(len(sqls)):
+				sql = sqls[i]
+				if not sql.strip():
+					continue
+				try:
+					result = self.execSql(sql)
+					results[i] = []
+					results[i].append(result.column_names)
+					for j in result:
+						results[i].append(j)
+				except Exception as e:
+					errors[i] = e
+			for i,result in results.items():
+				if not result[0]:
+					print(f"Query #{i}: Successfuly executed, No result returned (Empty Set)")
+					continue
+				self.displayFormattedResult(result)
+				print("")
+			for i, error in errors.items():
+				log(f"Query #{i}: {error}",isError=True)
+			self.flags["mode"] = "normal"
+			self.multiSqlCache = ""
 	def getPrompt(self):
-		if self.flags["mode"] == "sql":
+		if self.flags["mode"] in ("sql", "multi-sql"):
 			promptLength = len(self.meta["host"])
 			if self.meta["dbName"]:
 				promptLength += len(self.meta["dbName"]) + 1
-			return "\r"+(" " * (promptLength - 3)) + "SQL >>>"
+			multiline_indicator = "```" if self.flags["mode"] == "multi-sql" else ">>>"
+			return "\r"+(" " * (promptLength - 3)) + "SQL " + multiline_indicator
 
 		if self.flags["layer"]:
 			return parse(f"\r{self.meta['host']}/§b{self.meta['dbName']}§0 >>>")
