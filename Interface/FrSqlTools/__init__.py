@@ -81,8 +81,11 @@ class FrSqlTools:
 			self.sqlCache = ""
 	def getPrompt(self):
 		if self.flags["mode"] == "sql":
-			promptLength = len(self.meta["host"]) + len(self.meta["dbName"]) + 1
+			promptLength = len(self.meta["host"])
+			if self.meta["dbName"]:
+				promptLength += len(self.meta["dbName"]) + 1
 			return "\r"+(" " * (promptLength - 3)) + "SQL >>>"
+
 		if self.flags["layer"]:
 			return parse(f"\r{self.meta['host']}/§b{self.meta['dbName']}§0 >>>")
 		else:

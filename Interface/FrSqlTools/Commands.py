@@ -100,9 +100,6 @@ def lt(client,args):
 
 @command("```")
 def cd(client,args):
-	if not client.meta["dbName"]:
-		log("Please select a database before query.")
-		return
 	client.flags["mode"] = "sql"
 		
 
