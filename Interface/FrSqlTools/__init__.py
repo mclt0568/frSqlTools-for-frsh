@@ -48,8 +48,8 @@ class FrSqlTools:
 		if not cmd.strip():
 			return
 		parts = cmd.split(" ")
-		if parts[0] in COMMANDS:
-			COMMANDS[parts[0]](self,parts[1:])
+		if parts[0].lower() in COMMANDS:
+			COMMANDS[parts[0].lower()](self,parts[1:])
 		else:
 			log(f"Unknown Command: {parts[0]}", isError=True)
 	def execSql(self,sql):

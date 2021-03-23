@@ -53,10 +53,6 @@ def use(client,args):
 	except Exception as e:
 		log(e,isError=True)
 
-@command("USE")
-def use(client,args):
-	client.execCmd(f"use {' '.join(args)}")
-
 @command("cd")
 def cd(client,args):
 	if (not client.meta["dbName"]) and (not args):
