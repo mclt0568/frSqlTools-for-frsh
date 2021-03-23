@@ -1,5 +1,8 @@
+from LaunchControls.InitialVariables import read
 from Interface.FrSqlTools.Utils import log
+from Interface.GetKeyPress import listen
 from ColorStr import parse
+import sys
 
 COMMANDS = {}
 
@@ -65,6 +68,35 @@ def cd(client,args):
 		client.flags["layer"] = 0
 	else:
 		client.flags["layer"] = 1
+
+@command("mkdb")
+def lt(client,args):
+	if not args:
+		log("MKDB takes in 1 argument: Database Name", isError=True)
+	try:
+		client.execSql(f"CREATE DATABASE {args[0]}")
+	except Exception as e:
+		log(e,isError=True)
+
+@command("rmdb")
+def lt(client,args):
+	if not args:
+		log("RMDB takes in 1 argument: Database Name", isError=True)
+	try:
+		while True:
+			sys.stdout.write(f"Are you sure to REMOVE DATABASE `{args[0]}`? [y/n]")
+			sys.stdout.flush()
+			key = listen()
+			if key in ("y","Y"):
+				print("")
+				break
+			if key in ("n", "N"):
+				print("")
+				return
+			log(f"Unknown option: {key}",front="\n",isError=True)
+		client.execSql(f"DROP DATABASE {args[0]}")
+	except Exception as e:
+		log(e,isError=True)
 
 @command("```")
 def cd(client,args):
